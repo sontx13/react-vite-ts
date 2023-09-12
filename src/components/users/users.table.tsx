@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 // import '../../style/user.css'
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-
+import { Button,Modal } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 interface IUser{
     _id:string,
     email:string,
@@ -67,33 +68,40 @@ const UserTable = () =>{
             render: (text) => <a>{text}</a>,
         },
     ]
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
     return(
         <div>
-            <h2>Table User</h2>
+            <div style={{
+                display:"flex",
+                justifyContent:"space-between",
+                alignItems:"center"
+            }}>
+                <h2>Table User</h2>
+                <div>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add User</Button>
+                </div>
+            </div>
+            
             <Table columns={columns} dataSource={listUser} rowKey={"_id"}/>
-            {/* <table>
-                <thead>
-                    <tr>
-                        <td>Email</td>
-                        <td>Name</td>
-                        <td>Role</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        listUser.map((item:IUser)=> {
-                            return(
-                                <tr key={item._id}>
-                                    <td>{item.email}</td>
-                                    <td>{item.name}</td>
-                                    <td>{item.role}</td>
-                                </tr>
-                            )
-                        })
-                    }
-                 
-                </tbody>
-            </table> */}
+            
+            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+            </Modal>
         </div>
     )
 }
