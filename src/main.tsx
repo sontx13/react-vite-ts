@@ -8,11 +8,11 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-import './index.css';
-import { AppstoreOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
+import {  HomeOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import UserPage from './screens/users.page.tsx';
+import './App.scss';
 
 const items: MenuProps['items'] = [
   {

@@ -1,4 +1,3 @@
-import './App.css'
 import ToDoComponent from './todo/input.todo'
 import {useState} from 'react'
 

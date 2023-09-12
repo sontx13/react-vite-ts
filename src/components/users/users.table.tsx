@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import '../../style/user.css'
+// import '../../style/user.css'
+import { Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 
 interface IUser{
     _id:string,
@@ -27,7 +29,7 @@ const UserTable = () =>{
                 })
         });
         const data = await res.json();
-        //console.log(">>> data==" +  JSON.stringify(data));
+        console.log(">>> data==" +  JSON.stringify(data));
 
         const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGNkIiwibmFtZSI6IlRy4bqnbiBYdcOibiBTxqFuIiwiZW1haWwiOiJzb250eDEzQGdtYWlsLmNvbSIsInJvbGUiOnsiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGM3IiwibmFtZSI6IlNVUEVSX0FETUlOIn0sImlhdCI6MTY5NDUyMzE3MSwiZXhwIjoxNjk0NjA5NTcxfQ.wxdhmeyH4XfDuets-0ymR-ZVFTbbdR1atDpe0QR3hIQ";
 
@@ -47,10 +49,29 @@ const UserTable = () =>{
     }
 
     console.log(">>> check re-reder"+JSON.stringify(listUser));
+
+    const columns: ColumnsType<IUser> = [
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            render: (text) => <a>{text}</a>,
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            render: (text) => <a>{text}</a>,
+        },
+        {
+            title: 'Role',
+            dataIndex: 'role',
+            render: (text) => <a>{text}</a>,
+        },
+    ]
     return(
         <div>
             <h2>Table User</h2>
-            <table>
+            <Table columns={columns} dataSource={listUser} rowKey={"_id"}/>
+            {/* <table>
                 <thead>
                     <tr>
                         <td>Email</td>
@@ -72,7 +93,7 @@ const UserTable = () =>{
                     }
                  
                 </tbody>
-            </table>
+            </table> */}
         </div>
     )
 }
