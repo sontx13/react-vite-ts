@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 // import '../../style/user.css'
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Button,Modal } from 'antd';
+import { Button,Modal,Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 interface IUser{
     _id:string,
@@ -13,6 +13,15 @@ interface IUser{
 const UserTable = () =>{
    
     const [listUser,setListUser]= useState([]);
+
+    const [name,setName]= useState("");
+    const [email,setEmail]= useState("");
+    const [password,setPassword]= useState("");
+    const [age,setAge]= useState("");
+    const [gender,setGender]= useState("");
+    const [address,setAddress]= useState("");
+    const [role,setRole]= useState("");
+
     useEffect(()=>{
         //console.log(">>> check useEffect");
         getData()
@@ -30,7 +39,7 @@ const UserTable = () =>{
                 })
         });
         const data = await res.json();
-        console.log(">>> data==" +  JSON.stringify(data));
+        //console.log(">>> data==" +  JSON.stringify(data));
 
         const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGNkIiwibmFtZSI6IlRy4bqnbiBYdcOibiBTxqFuIiwiZW1haWwiOiJzb250eDEzQGdtYWlsLmNvbSIsInJvbGUiOnsiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGM3IiwibmFtZSI6IlNVUEVSX0FETUlOIn0sImlhdCI6MTY5NDUyMzE3MSwiZXhwIjoxNjk0NjA5NTcxfQ.wxdhmeyH4XfDuets-0ymR-ZVFTbbdR1atDpe0QR3hIQ";
 
@@ -49,7 +58,7 @@ const UserTable = () =>{
         
     }
 
-    console.log(">>> check re-reder"+JSON.stringify(listUser));
+    //console.log(">>> check re-reder"+JSON.stringify(listUser));
 
     const columns: ColumnsType<IUser> = [
         {
@@ -76,6 +85,8 @@ const UserTable = () =>{
     };
 
     const handleOk = () => {
+        const data = {name,email,password,age,gender,address,role}
+        console.log("data=="+JSON.stringify(data))
         setIsModalOpen(false);
     };
 
@@ -97,10 +108,56 @@ const UserTable = () =>{
             
             <Table columns={columns} dataSource={listUser} rowKey={"_id"}/>
             
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+            <Modal title="Add new User" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} maskClosable={false} >
+               <div>
+                    <label>Name:</label>
+                    <Input
+                        value={name}
+                        onChange={(event)=> setName(event.target.value)} 
+                    ></Input>
+               </div>
+                <div>
+                    <label>Email:</label>
+                    <Input
+                        value={email}
+                        onChange={(event)=> setEmail(event.target.value)} 
+                    ></Input>
+               </div>
+                <div>
+                    <label>Password:</label>
+                    <Input
+                        value={password}
+                        onChange={(event)=> setPassword(event.target.value)} 
+                    ></Input>
+               </div>
+                <div>
+                    <label>Age:</label>
+                    <Input
+                        value={age}
+                        onChange={(event)=> setAge(event.target.value)} 
+                    ></Input>
+               </div>
+                <div>
+                    <label>Gender:</label>
+                    <Input
+                        value={gender}
+                        onChange={(event)=> setGender(event.target.value)} 
+                    ></Input>
+               </div>
+                <div>
+                    <label>Address:</label>
+                    <Input
+                        value={address}
+                        onChange={(event)=> setAddress(event.target.value)} 
+                    ></Input>
+               </div>
+                <div>
+                    <label>Role:</label>
+                    <Input
+                        value={role}
+                        onChange={(event)=> setRole(event.target.value)} 
+                    ></Input>
+               </div>
             </Modal>
         </div>
     )
