@@ -1,34 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import ToDoComponent from './todo/input.todo'
+import {useState} from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(1);
+  const name = "props name";
+  const age = 20;
+  const address = {
+    county:"VN",
+    city:"HN"
+  };
+
+  const [listUser, setListUser] = useState(["user1","user2","user3","user4"]);
+
+  const handleTest = (user:string) => {
+    alert(`handleTest with user= ${user}`);
+  } 
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <div>count: {count}</div>
+      <button onClick={()=> setCount(count+1)}>Increase</button>
+      <ToDoComponent name={name} age={age} address={address} handleTest={handleTest} listUser={listUser} setListUser={setListUser}/>
+       <ul>
+            {listUser.map((item,index) => {
+            return(
+                <li key={index}>{item}</li>
+            )
+            })}
+        </ul>
+    </div>
   )
 }
 
