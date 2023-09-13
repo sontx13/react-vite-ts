@@ -27,13 +27,21 @@ const UserTable = () =>{
 
     const access_token = localStorage.getItem("access_token") as string;
 
+    //pagination
+    const [meta,setMeta]= useState({
+        current: 1,
+        pageSize: 5,
+        pages: 0,
+        total: 0
+    });
+
     useEffect(()=>{
         getData()
     },[])
 
     const getData = async() =>{
 
-        const res_list_user = await fetch("http://localhost:8000/api/v1/users",{
+        const res_list_user = await fetch(`http://localhost:8000/api/v1/users?current=${meta.current}&pageSize=${meta.pageSize}`,{
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -44,12 +52,18 @@ const UserTable = () =>{
 
         if(!d.data){
             notification.error({
-                message: JSON.stringify(d.manage)
+                message: JSON.stringify(d.message)
             })
         }
         //console.log(">>> listUser==" +  JSON.stringify(d.data.result));
-
         setListUser(d.data.result);
+           
+        setMeta({
+            current: d.data.meta.current,
+            pageSize: d.data.meta.pageSize,
+            pages: d.data.meta.pages,
+            total: d.data.meta.total,
+        })
     }
 
     const confirm = async (user:IUser) => {
@@ -68,6 +82,7 @@ const UserTable = () =>{
                 message: "Xoá User thành công",
             })
             setIsUpdateModalOpen(false);
+         
         }else{
             notification.error({
                 message: "Có lỗi xảy ra",
@@ -77,6 +92,7 @@ const UserTable = () =>{
         //message.success('Click on Yes');
 
         await getData();
+        
     };
 
     const columns: ColumnsType<IUser> = [
@@ -119,6 +135,33 @@ const UserTable = () =>{
         },
     ]
 
+    const handleOnChange = async (page:number, pageSize:number) => {
+        //console.log("page=="+page,">>>pageSize==="+pageSize)
+
+        const res_list_user = await fetch(`http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${access_token}`
+                },
+        });
+        const d = await res_list_user.json();
+
+        if(!d.data){
+            notification.error({
+                message: JSON.stringify(d.message)
+            })
+        }
+
+        //console.log(">>> listUser==" +  JSON.stringify(d.data.result));
+        setListUser(d.data.result);
+        setMeta({
+            current: d.data.meta.current,
+            pageSize: d.data.meta.pageSize,
+            pages: d.data.meta.pages,
+            total: d.data.meta.total,
+        })
+    }
     return(
         <div>
             <div style={{
@@ -132,7 +175,16 @@ const UserTable = () =>{
                 </div>
             </div>
             
-            <Table columns={columns} dataSource={listUser} rowKey={"_id"}/>
+            <Table columns={columns} dataSource={listUser} rowKey={"_id"}
+                    pagination={{
+                        current:meta.current,
+                        pageSize:meta.pageSize,
+                        total:meta.total,
+                        showTotal:(total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                        onChange:(page:number, pageSize:number) => handleOnChange(page,pageSize),
+                        showSizeChanger:true
+                    }}
+            />
             
             <CreateUserModal access_token={access_token} getData={getData} isCreateModalOpen={isCreateModalOpen} setIsCreateModalOpen={setIsCreateModalOpen}/>
             <UpdateUserModal access_token={access_token} getData={getData} isUpdateModalOpen={isUpdateModalOpen} setIsUpdateModalOpen={setIsUpdateModalOpen} dataUpdate={dataUpdate} setIsDataUpdate={setIsDataUpdate}/>

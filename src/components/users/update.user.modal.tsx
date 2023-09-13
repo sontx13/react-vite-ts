@@ -22,7 +22,7 @@ const UpdateUserModal = (props: IProps) => {
 
     const {access_token,getData,isUpdateModalOpen,setIsUpdateModalOpen,dataUpdate,setIsDataUpdate} =props;
 
-    console.log("dataUpdate=="+JSON.stringify(dataUpdate));
+    //console.log("dataUpdate=="+JSON.stringify(dataUpdate));
 
     useEffect(() =>{
         if(dataUpdate){
