@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Button } from 'antd';
+import { Button,notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './create.user.modal';
 import UpdateUserModal from './update.user.modal';
 
-interface IUser{
+export interface IUser{
     _id:string,
-    email:string,
     name:string,
-    role:string
+    email:string,
+    password:string,
+    age:string,
+    gender:string,
+    address:string,
+    role:string,
 }
 
 const UserTable = () =>{
@@ -18,6 +22,8 @@ const UserTable = () =>{
     const [listUser,setListUser]= useState([]);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+    const [dataUpdate, setIsDataUpdate] = useState<null|IUser>(null);
 
     const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGNkIiwibmFtZSI6IlRy4bqnbiBYdcOibiBTxqFuIiwiZW1haWwiOiJzb250eDEzQGdtYWlsLmNvbSIsInJvbGUiOnsiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGM3IiwibmFtZSI6IlNVUEVSX0FETUlOIn0sImlhdCI6MTY5NDU2Njg1NCwiZXhwIjoxNjk0NjUzMjU0fQ.Xa-ug-JyZErwYlUJ612NBiuElOBFJNJ4FpwpCKrii2U";
 
@@ -47,6 +53,12 @@ const UserTable = () =>{
                 },
         });
         const d = await res_list_user.json();
+
+        if(!d.data){
+            notification.error({
+                message: JSON.stringify(d.manage)
+            })
+        }
         //console.log(">>> listUser==" +  JSON.stringify(d.data.result));
 
         setListUser(d.data.result);
@@ -71,7 +83,8 @@ const UserTable = () =>{
                 //console.log(">>> record==" +  JSON.stringify(record));
                 return(
                     <Button type="default" onClick={()=>{
-                        setIsUpdateModalOpen(true)
+                        setIsDataUpdate(record);
+                        setIsUpdateModalOpen(true);
                     }}>Edit</Button>
                 )
             }
@@ -94,7 +107,7 @@ const UserTable = () =>{
             <Table columns={columns} dataSource={listUser} rowKey={"_id"}/>
             
             <CreateUserModal access_token={access_token} getData={getData} isCreateModalOpen={isCreateModalOpen} setIsCreateModalOpen={setIsCreateModalOpen}/>
-            <UpdateUserModal access_token={access_token} getData={getData} isUpdateModalOpen={isUpdateModalOpen} setIsUpdateModalOpen={setIsUpdateModalOpen}/>
+            <UpdateUserModal access_token={access_token} getData={getData} isUpdateModalOpen={isUpdateModalOpen} setIsUpdateModalOpen={setIsUpdateModalOpen} dataUpdate={dataUpdate} setIsDataUpdate={setIsDataUpdate}/>
         </div>
     )
 }

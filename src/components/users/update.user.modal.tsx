@@ -1,11 +1,14 @@
 import { Modal,Input,notification } from 'antd';
-import {  useState } from 'react';
+import {  useState,useEffect } from 'react';
+import { IUser } from './users.table';
 
 interface IProps{
     access_token:string,
     getData:any,
     isUpdateModalOpen:boolean,
     setIsUpdateModalOpen: (v:boolean) => void;
+    dataUpdate:null|IUser;
+    setIsDataUpdate:any;
 }
 
 const UpdateUserModal = (props: IProps) => {
@@ -17,15 +20,28 @@ const UpdateUserModal = (props: IProps) => {
     const [address,setAddress]= useState("");
     const [role,setRole]= useState("");
 
-    const {access_token,getData,isUpdateModalOpen,setIsUpdateModalOpen} =props;
+    const {access_token,getData,isUpdateModalOpen,setIsUpdateModalOpen,dataUpdate,setIsDataUpdate} =props;
 
+    console.log("dataUpdate=="+JSON.stringify(dataUpdate));
+
+    useEffect(() =>{
+        if(dataUpdate){
+            setName(dataUpdate.name);
+            setEmail(dataUpdate.email);
+            setPassword(dataUpdate.password);
+            setAge(dataUpdate.age);
+            setGender(dataUpdate.gender);
+            setAddress(dataUpdate.address);
+            setRole(dataUpdate.role);
+        }
+    },[dataUpdate])
     const handleOk = async () => {
 
-        const data = {name,email,password,age,gender,address,role};
+        const data = {_id:dataUpdate?._id ,name,email,password,age,gender,address,role};
         console.log("data=="+JSON.stringify(data));
 
-            const res_post_user = await fetch("http://localhost:8000/api/v1/users",{
-                method: "POST",
+            const res_patch_user = await fetch("http://localhost:8000/api/v1/users",{
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${access_token}`
@@ -37,12 +53,12 @@ const UpdateUserModal = (props: IProps) => {
                     }
                 })
         });
-        const data_user = await res_post_user.json();
+        const data_user = await res_patch_user.json();
 
         if(data_user.data){
             await getData();
             notification.success({
-                message: "Tạo mới User thành công",
+                message: "Sửa User thành công",
             })
             setIsUpdateModalOpen(false);
         }else{
@@ -56,6 +72,7 @@ const UpdateUserModal = (props: IProps) => {
 
     const hanleCloseModal = () =>{
         const {setIsUpdateModalOpen} =props;
+        setIsDataUpdate(null);
         setIsUpdateModalOpen(false);
         setName("");
         setEmail("");
@@ -78,6 +95,7 @@ const UpdateUserModal = (props: IProps) => {
                 <div>
                     <label>Email:</label>
                     <Input
+                        disabled
                         value={email}
                         onChange={(event)=> setEmail(event.target.value)} 
                     ></Input>
@@ -85,6 +103,7 @@ const UpdateUserModal = (props: IProps) => {
                 <div>
                     <label>Password:</label>
                     <Input
+                        disabled
                         value={password}
                         onChange={(event)=> setPassword(event.target.value)} 
                     ></Input>
