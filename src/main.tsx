@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import {  useState } from 'react';
+import {  useState,useEffect } from 'react';
 import App from './App.tsx';
 import {
   createBrowserRouter,
@@ -40,7 +40,30 @@ const Header: React.FC = () => {
 };
 
 
-const LayoutAdmin = () => {
+const LayoutAdmin =  () => {
+
+  const getData = async() =>{
+      const res = await fetch("http://localhost:8000/api/v1/auth/login",{
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username: "sontx13@gmail.com",
+                        password: "123456"
+                    })
+      });
+      const d = await res.json();
+      
+      if(d.data){
+        localStorage.setItem("access_token",d.data.access_token)
+      }
+  }
+     
+
+  useEffect(()=>{
+    getData()
+  },[])
   return (
     <div>
       <Header/>

@@ -25,25 +25,13 @@ const UserTable = () =>{
 
     const [dataUpdate, setIsDataUpdate] = useState<null|IUser>(null);
 
-    const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGNkIiwibmFtZSI6IlRy4bqnbiBYdcOibiBTxqFuIiwiZW1haWwiOiJzb250eDEzQGdtYWlsLmNvbSIsInJvbGUiOnsiX2lkIjoiNjRlZDljNmMxZjM5MzkxNWNlMjVmNGM3IiwibmFtZSI6IlNVUEVSX0FETUlOIn0sImlhdCI6MTY5NDU2Njg1NCwiZXhwIjoxNjk0NjUzMjU0fQ.Xa-ug-JyZErwYlUJ612NBiuElOBFJNJ4FpwpCKrii2U";
+    const access_token = localStorage.getItem("access_token") as string;
 
     useEffect(()=>{
         getData()
     },[])
 
     const getData = async() =>{
-        const res = await fetch("http://localhost:8000/api/v1/auth/login",{
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: "sontx13@gmail.com",
-                    password: "123456"
-                })
-        });
-        const data = await res.json();
-        //console.log(">>> data==" +  JSON.stringify(data));
 
         const res_list_user = await fetch("http://localhost:8000/api/v1/users",{
                 method: "GET",

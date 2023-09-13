@@ -2,6 +2,7 @@ import ToDoComponent from './todo/input.todo'
 import {useState} from 'react'
 
 function App() {
+
   const [count, setCount] = useState(1);
   const name = "props name";
   const age = 20;
