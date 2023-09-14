@@ -1,5 +1,5 @@
-import { Modal,Input,notification } from 'antd';
-import {  useState,useEffect } from 'react';
+import { Modal,Input,notification,Form, InputNumber, Select } from 'antd';
+import {  useEffect } from 'react';
 import { IUser } from './users.table';
 
 interface IProps{
@@ -12,13 +12,8 @@ interface IProps{
 }
 
 const UpdateUserModal = (props: IProps) => {
-    const [name,setName]= useState("");
-    const [email,setEmail]= useState("");
-    const [password,setPassword]= useState("");
-    const [age,setAge]= useState("");
-    const [gender,setGender]= useState("");
-    const [address,setAddress]= useState("");
-    const [role,setRole]= useState("");
+    const [form] = Form.useForm();
+    const { Option } = Select;
 
     const {access_token,getData,isUpdateModalOpen,setIsUpdateModalOpen,dataUpdate,setIsDataUpdate} =props;
 
@@ -26,18 +21,30 @@ const UpdateUserModal = (props: IProps) => {
 
     useEffect(() =>{
         if(dataUpdate){
-            setName(dataUpdate.name);
-            setEmail(dataUpdate.email);
-            setPassword(dataUpdate.password);
-            setAge(dataUpdate.age);
-            setGender(dataUpdate.gender);
-            setAddress(dataUpdate.address);
-            setRole(dataUpdate.role);
+          form.setFieldsValue({
+            name:dataUpdate.name,
+            email:dataUpdate.email,
+            password:dataUpdate.password,
+            age:dataUpdate.age,
+            gender:dataUpdate.gender,
+            address:dataUpdate.address,
+            role:dataUpdate.role,
+          })
         }
     },[dataUpdate])
-    const handleOk = async () => {
 
-        const data = {_id:dataUpdate?._id ,name,email,password,age,gender,address,role};
+    const hanleCloseModal = () =>{
+        setIsDataUpdate(null);
+        setIsUpdateModalOpen(false);
+        form.resetFields();
+    }
+
+    const onFinish = async(values: any) => {
+        console.log('Success:', values);
+
+        const {name,email,password,age,gender,address,role} =values ;
+       
+       const data = {_id:dataUpdate?._id ,name,email,password,age,gender,address,role};
         console.log("data=="+JSON.stringify(data));
 
             const res_patch_user = await fetch("http://localhost:8000/api/v1/users",{
@@ -70,72 +77,68 @@ const UpdateUserModal = (props: IProps) => {
         //console.log(">>> data_user==" +  JSON.stringify(data_user.data.result));
     };
 
-    const hanleCloseModal = () =>{
-        const {setIsUpdateModalOpen} =props;
-        setIsDataUpdate(null);
-        setIsUpdateModalOpen(false);
-        setName("");
-        setEmail("");
-        setPassword("");
-        setAge("");
-        setGender("");
-        setAddress("");
-        setRole("");
-    }
-
     return (
-          <Modal title="Update a User" open={isUpdateModalOpen} onOk={handleOk} onCancel={() =>  hanleCloseModal()} maskClosable={false} >
-               <div>
-                    <label>Name:</label>
-                    <Input
-                        value={name}
-                        onChange={(event)=> setName(event.target.value)} 
-                    ></Input>
-               </div>
-                <div>
-                    <label>Email:</label>
-                    <Input
-                        disabled
-                        value={email}
-                        onChange={(event)=> setEmail(event.target.value)} 
-                    ></Input>
-               </div>
-                <div>
-                    <label>Password:</label>
-                    <Input
-                        disabled
-                        value={password}
-                        onChange={(event)=> setPassword(event.target.value)} 
-                    ></Input>
-               </div>
-                <div>
-                    <label>Age:</label>
-                    <Input
-                        value={age}
-                        onChange={(event)=> setAge(event.target.value)} 
-                    ></Input>
-               </div>
-                <div>
-                    <label>Gender:</label>
-                    <Input
-                        value={gender}
-                        onChange={(event)=> setGender(event.target.value)} 
-                    ></Input>
-               </div>
-                <div>
-                    <label>Address:</label>
-                    <Input
-                        value={address}
-                        onChange={(event)=> setAddress(event.target.value)} 
-                    ></Input>
-               </div>
-                <div>
-                    <label>Role:</label>
-                    <Input
-                        value={role}
-                        onChange={(event)=> setRole(event.target.value)} 
-                    ></Input>
-               </div>
+          <Modal title="Update a User" open={isUpdateModalOpen} onOk={()=>form.submit()} onCancel={() =>  hanleCloseModal()} maskClosable={false} >
+              <Form
+                    name="basic"
+                    onFinish={onFinish}
+                    layout='vertical'
+                    form={form}
+                >
+                    <Form.Item
+                        label="Name"
+                        name="name"
+                        rules={[{ required: true, message: 'Please input your Name!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your Email!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Age"
+                        name="age"
+                        rules={[{ required: true, message: 'Please input your Age!' }]}
+                    >
+                        <InputNumber style={{width:"100%"}}/>
+                    </Form.Item>
+                    
+                   
+                   <Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
+                        <Select
+                        placeholder="Select a option and change input text above"
+                        allowClear
+                        >
+                            <Option value="male">male</Option>
+                            <Option value="female">female</Option>
+                            <Option value="other">other</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Address"
+                        name="address"
+                        rules={[{ required: true, message: 'Please input your Address!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item name="role" label="Role" rules={[{ required: true }]}>
+                        <Select
+                        placeholder="Select a option and change input text above"
+                        allowClear
+                        >
+                            <Option value="64ed9c6c1f393915ce25f4c8">USER</Option>
+                            <Option value="64ed9c6c1f393915ce25f4c7">ADMIN</Option>
+                        </Select>
+                    </Form.Item>
+                </Form>
             </Modal>
     )
 }
